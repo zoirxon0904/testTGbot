@@ -94,54 +94,67 @@ async def start(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
             pass
 
     # ── Foydalanuvchini DBga yozish ────────────────────────────
-# ── Foydalanuvchini DBga yozish ────────────────────────────
-already_exists = db.get_user(user_id) is not None
-db.add_user(
-    user_id   = user_id,
-    username  = user.username or "",
-    full_name = user.full_name,
-    referred_by = referrer_id,
-)
-
-# ── ALWAYS tekshirish, har safar /start bosganida ───────────
-# (hatto reward olgan bo'lsa ham, agar kanaldan chiqsa qayta tekshir)
-membership = await check_membership(ctx.bot, user_id)
-
-if all(membership):
-    await send_referral_message(update, ctx)
-    return  # <-- Exit here if all channels OK
+    already_exists = db.get_user(user_id) is not None
+    db.add_user(
+        user_id   = user_id,
+        username  = user.username or "",
+        full_name = user.full_name,
+        referred_by = referrer_id,
+    )
 
     # ── Referralni qayd etish va taklif qilganga xabar ─────────
     if referrer_id and not already_exists:
-        db.add_referral(referrer_id, user_id)
-        ref_count = db.count_referrals(referrer_id)
+        # Taklif qiluvchi hali ham barcha kanallarga a'zo bo'lishi shart.
+        # Aks holda referral hisobga olinmaydi va mukofot berilmaydi.
+        referrer_membership = await check_membership(ctx.bot, referrer_id)
 
-        # Taklif qilganga bildirish
-        try:
-            await ctx.bot.send_message(
-                chat_id=referrer_id,
-                text=(
-                    f"🎉 Do'stingiz <b>{user.full_name}</b> sizning havolangiz "
-                    f"orqali botga qo'shildi!\n\n"
-                    f"📊 Sizning referrallaringiz: <b>{ref_count}/{REFERRAL_REQUIRED}</b>"
-                ),
-                parse_mode="HTML",
-            )
-        except TelegramError:
-            pass
+        if all(referrer_membership):
+            db.add_referral(referrer_id, user_id)
+            ref_count = db.count_referrals(referrer_id)
 
-        # Agar 3 ta to'lgan bo'lsa → final linkni yuborish
-        if ref_count >= REFERRAL_REQUIRED and not db.is_rewarded(referrer_id):
-            db.mark_rewarded(referrer_id)
+            # Taklif qilganga bildirish
             try:
                 await ctx.bot.send_message(
                     chat_id=referrer_id,
                     text=(
-                        "🏆 <b>Tabriklaymiz!</b> Siz 3 ta do'stingizni taklif qildingiz!\n\n"
-                        "🔓 Maxsus kanal linki:\n"
-                        f"{FINAL_CHANNEL_LINK}"
+                        f"🎉 Do'stingiz <b>{user.full_name}</b> sizning havolangiz "
+                        f"orqali botga qo'shildi!\n\n"
+                        f"📊 Sizning referrallaringiz: <b>{ref_count}/{REFERRAL_REQUIRED}</b>"
                     ),
                     parse_mode="HTML",
+                )
+            except TelegramError:
+                pass
+
+            # Agar 3 ta to'lgan bo'lsa → final linkni yuborish
+            if ref_count >= REFERRAL_REQUIRED and not db.is_rewarded(referrer_id):
+                db.mark_rewarded(referrer_id)
+                try:
+                    await ctx.bot.send_message(
+                        chat_id=referrer_id,
+                        text=(
+                            "🏆 <b>Tabriklaymiz!</b> Siz 3 ta do'stingizni taklif qildingiz!\n\n"
+                            "🔓 Maxsus kanal linki:\n"
+                            f"{FINAL_CHANNEL_LINK}"
+                        ),
+                        parse_mode="HTML",
+                    )
+                except TelegramError:
+                    pass
+        else:
+            # Taklif qiluvchi kanallardan chiqib ketgan — eslatib qo'yamiz.
+            try:
+                keyboard = build_subscription_keyboard(referrer_membership)
+                await ctx.bot.send_message(
+                    chat_id=referrer_id,
+                    text=(
+                        "⚠️ Sizning havolangiz orqali yangi foydalanuvchi keldi, "
+                        "lekin siz majburiy kanallardan chiqib ketgansiz.\n\n"
+                        "Referral hisobga olinishi uchun quyidagi kanallarga "
+                        "qayta a'zo bo'ling va <b>«A'zolikni tekshirish»</b> tugmasini bosing."
+                    ),
+                    parse_mode="HTML",
+                    reply_markup=keyboard,
                 )
             except TelegramError:
                 pass
