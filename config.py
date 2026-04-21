@@ -10,19 +10,19 @@ BOT_TOKEN = "YOUR_BOT_TOKEN_HERE"
 #    Kanal ID ni qanday topish: pastdagi README ga qarang
 REQUIRED_CHANNELS = [
     {
-        "id": -1001234567890,          # <-- kanal ID (manfiy son)
-        "link": "https://t.me/+WcdtRNyDSlE2MTkx",
-        "name": "Kanal 1",
-    },
-    {
-        "id": -1009876543210,          # <-- kanal ID
-        "link": "https://t.me/Dilbarkhon_Mansurovna",
-        "name": "Dilbarkhon Mansurovna",
-    },
-    {
-        "id": -1001122334455,          # <-- kanal ID
-        "link": "https://t.me/+b0_CsM93ckljMTA6",
+        "id": -3998098831,          # <-- kanal ID (manfiy son)
+        "link": "https://t.me/+ejBT7_TK4oZhZmVi",
         "name": "Kanal 3",
+    },
+    {
+        "id": -3979529915,          # <-- kanal ID
+        "link": "https://t.me/+QIwOlZTn-hxhOWEy",
+        "name": "Kanal 2",
+    },
+    {
+        "id": -3950616100,          # <-- kanal ID
+        "link": "https://t.me/+8i6gEFq-ZcpjMjAy",
+        "name": "Kanal 1",
     },
 ]
 
