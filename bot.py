@@ -12,6 +12,7 @@ from telegram.ext import (
     Application,
     CommandHandler,
     CallbackQueryHandler,
+    ChatJoinRequestHandler,
     ContextTypes,
 )
 from telegram.error import TelegramError
@@ -284,6 +285,37 @@ async def my_referral(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
 
 
 # ══════════════════════════════════════════════════════════════
+#  KANALGA QO'SHILISH SO'ROVINI AVTOMATIK TASDIQLASH
+# ══════════════════════════════════════════════════════════════
+
+async def approve_join_request(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
+    """
+    Foydalanuvchi majburiy kanallarning birortasiga 'qo'shilish so'rovi'
+    yuborsa, bot uni avtomatik tasdiqlaydi.
+    Bot kanalda admin bo'lishi va 'Add Members' huquqiga ega bo'lishi shart.
+    """
+    req = update.chat_join_request
+    chat_id = req.chat.id
+    user_id = req.from_user.id
+
+    # Faqat sozlamalardagi kanallar uchun ishlasin
+    allowed_ids = {ch["id"] for ch in REQUIRED_CHANNELS}
+    if chat_id not in allowed_ids:
+        return
+
+    try:
+        await ctx.bot.approve_chat_join_request(chat_id=chat_id, user_id=user_id)
+        logger.info(
+            "Approved join request: user=%s chat=%s", user_id, chat_id
+        )
+    except TelegramError as e:
+        logger.warning(
+            "Could not approve join request user=%s chat=%s: %s",
+            user_id, chat_id, e,
+        )
+
+
+# ══════════════════════════════════════════════════════════════
 #  MAIN
 # ══════════════════════════════════════════════════════════════
 
@@ -296,6 +328,7 @@ def main():
     app.add_handler(CommandHandler("start",    start))
     app.add_handler(CommandHandler("referral", my_referral))
     app.add_handler(CallbackQueryHandler(check_subs_callback, pattern="^check_subs$"))
+    app.add_handler(ChatJoinRequestHandler(approve_join_request))
 
     logger.info("Bot ishga tushdi ✅")
     app.run_polling(allowed_updates=Update.ALL_TYPES)
