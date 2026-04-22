@@ -30,7 +30,7 @@ REQUIRED_CHANNELS = [
 FINAL_CHANNEL_LINK = "https://t.me/+sn2GKZ-oZX9lM2Qy"
 
 # 4. Nechta do'st taklif qilish kerak
-REFERRAL_REQUIRED = 3
+REFERRAL_REQUIRED = 5
 
 # 5. SQLite fayl nomi
 DB_FILE = "bot.db"

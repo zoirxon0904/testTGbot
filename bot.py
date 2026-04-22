@@ -127,14 +127,14 @@ async def start(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
             except TelegramError:
                 pass
 
-            # Agar 3 ta to'lgan bo'lsa → final linkni yuborish
+            # Agar yetarli to'lgan bo'lsa → final linkni yuborish
             if ref_count >= REFERRAL_REQUIRED and not db.is_rewarded(referrer_id):
                 db.mark_rewarded(referrer_id)
                 try:
                     await ctx.bot.send_message(
                         chat_id=referrer_id,
                         text=(
-                            "🏆 <b>Tabriklaymiz!</b> Siz 3 ta do'stingizni taklif qildingiz!\n\n"
+                            f"🏆 <b>Tabriklaymiz!</b> Siz {REFERRAL_REQUIRED} ta do'stingizni taklif qildingiz!\n\n"
                             "🔓 Maxsus kanal linki:\n"
                             f"{FINAL_CHANNEL_LINK}"
                         ),
@@ -241,10 +241,10 @@ async def send_referral_message(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     await send_fn(
         text=(
             f"✅ <b>Ajoyib, {full_name}!</b> Barcha kanallarga a'zo bo'ldingiz.\n\n"
-            f"📨 Endi <b>3 ta do'stingizni</b> botga taklif qiling:\n\n"
+            f"📨 Endi <b>{REFERRAL_REQUIRED} ta do'stingizni</b> botga taklif qiling:\n\n"
             f"🔗 Sizning shaxsiy havolangiz:\n{ref_link}\n\n"
             f"👥 Taklif qilinganlar: <b>{ref_count}/{REFERRAL_REQUIRED}</b>\n\n"
-            f"3 ta do'stingiz botga qo'shilgandan so'ng sizga maxsus kanal linki yuboriladi 🎁"
+            f"{REFERRAL_REQUIRED} ta do'stingiz botga qo'shilgandan so'ng sizga maxsus kanal linki yuboriladi 🎁"
         ),
         parse_mode="HTML",
     )
