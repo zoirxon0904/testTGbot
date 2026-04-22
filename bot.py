@@ -202,11 +202,15 @@ async def check_subs_callback(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
             + "\n".join(f"  • {name}" for name in not_joined)
             + "\n\nA'zo bo'lib, <b>«A'zolikni tekshirish»</b> ni bosing."
         )
-        await query.edit_message_text(
-            text=text,
-            parse_mode="HTML",
-            reply_markup=keyboard,
-        )
+        try:
+            await query.edit_message_text(
+                text=text,
+                parse_mode="HTML",
+                reply_markup=keyboard,
+            )
+        except TelegramError:
+            # Xabar o'zgarmagan bo'lsa (foydalanuvchi qayta-qayta bosgan) — e'tiborga olmaymiz
+            pass
 
 
 # ══════════════════════════════════════════════════════════════
