@@ -21,7 +21,7 @@ REQUIRED_CHANNELS = [
     },
     {
         "id": -1003950616100,  # <-- kanal ID
-        "link": "https://t.me/+8i6gEFq-ZcpjMjAy",
+        "link": "https://t.me/+Nma3Ge6D_gJiYmIy",
         "name": "Kanal 1",
     },
 ]
