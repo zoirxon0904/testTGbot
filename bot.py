@@ -242,7 +242,7 @@ async def send_referral_message(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         text=(
             f"✅ <b>Ajoyib, {full_name}!</b> Barcha kanallarga a'zo bo'ldingiz.\n\n"
             f"📨 Endi <b>3 ta do'stingizni</b> botga taklif qiling:\n\n"
-            f"🔗 Sizning shaxsiy havolangiz:\n<code>{ref_link}</code>\n\n"
+            f"🔗 Sizning shaxsiy havolangiz:\n{ref_link}\n\n"
             f"👥 Taklif qilinganlar: <b>{ref_count}/{REFERRAL_REQUIRED}</b>\n\n"
             f"3 ta do'stingiz botga qo'shilgandan so'ng sizga maxsus kanal linki yuboriladi 🎁"
         ),
