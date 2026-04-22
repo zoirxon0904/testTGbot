@@ -11,7 +11,7 @@ BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
 REQUIRED_CHANNELS = [
     {
         "id": -1003998098831,  # <-- kanal ID (manfiy son)
-        "link": "https://t.me/+ejBT7_TK4oZhZmVi",
+        "link": "https://t.me/+WtepH9K9UKE3YzAy",
         "name": "Kanal 3",
     },
     {
