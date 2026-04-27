@@ -39,11 +39,15 @@ logger = logging.getLogger(__name__)
 async def check_membership(bot, user_id: int) -> list[bool]:
     """
     Har bir kanal uchun foydalanuvchi a'zoligini tekshiradi.
-    True  → a'zo
+    True  → a'zo (yoki tekshirilmaydigan kanal)
     False → a'zo emas
+    Eslatma: verify=False bo'lgan kanallar har doim True qaytaradi.
     """
     results = []
     for ch in REQUIRED_CHANNELS:
+        if not ch.get("verify", True):
+            results.append(True)  # tekshirilmaydi → har doim "a'zo" deb hisoblanadi
+            continue
         try:
             member = await bot.get_chat_member(ch["id"], user_id)
             results.append(member.status not in ("left", "kicked"))
@@ -56,10 +60,14 @@ def build_subscription_keyboard(membership: list[bool]) -> InlineKeyboardMarkup:
     """
     Kanallar ro'yxati + pastda 'Tekshirish' tugmasi.
     A'zo bo'lgan → ✅, bo'lmagan → ❌
+    Tekshirilmaydigan kanallarda ✅/❌ o'rniga 🔗 ko'rsatiladi.
     """
     buttons = []
-    for i, (ch, joined) in enumerate(zip(REQUIRED_CHANNELS, membership)):
-        icon = "✅" if joined else "❌"
+    for ch, joined in zip(REQUIRED_CHANNELS, membership):
+        if not ch.get("verify", True):
+            icon = "🔗"
+        else:
+            icon = "✅" if joined else "❌"
         buttons.append([InlineKeyboardButton(
             f"{icon}  {ch['name']}",
             url=ch["link"],
