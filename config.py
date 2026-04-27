@@ -16,7 +16,7 @@ REQUIRED_CHANNELS = [
         "id": -1002265625081,
         "link": "https://t.me/+WcdtRNyDSlE2MTkx",
         "name": "𝑁𝑜𝑧𝑎 | 𝑁𝑒𝑤 𝑌𝑜𝑟𝑘",
-        "verify": True,
+        "verify": False,
     },
     {
         "id": -1001989513167,
